@@ -1,20 +1,6 @@
 # import pickle # to load pickle data
 import numpy as np  # for matrix multiplication
 from pickle_handler import PickleHandler
-from keras.layers import (
-    LSTM,
-    Activation,
-    Dropout,
-    Dense,
-    Input,
-    GRU,
-    RNN,
-    Bidirectional,
-    Embedding,
-)  # layers to make models
-from keras.models import Sequential  # model class to make a model
-from keras.callbacks import TensorBoard  # for tensorboard ops
-
 import tensorflow as tf  # main tf class for data related ops
 
 # preprocess got data using pickle handler class
@@ -59,23 +45,37 @@ vocab_size = gotData.vocab_size()  # set vocab size for our model
 
 # function to build a model
 def build_model(vocab_size, embedding_dims, rnn_units, batch_size):
-    model = Sequential(
+    model = tf.keras.Sequential(
         [
             # embedding layer to enhance input dims
-            Embedding(vocab_size, EMBEDDING_DIMS, batch_input_size=[BATCH_SIZE, None]),
+            tf.keras.layers.Embedding(
+                vocab_size, EMBEDDING_DIMS, batch_input_shape=[BATCH_SIZE, None]
+            ),
             # lstm layer
-            LSTM(
+            tf.keras.layers.LSTM(
                 rnn_units,
-                return_sequence=True,
+                return_sequences=True,
                 stateful=True,
                 recurrent_initializer="glorot_uniform",
             ),
             # drop out layer for better training efficiency
-            Dropout(rate=0.4),
+            tf.keras.layers.Dropout(rate=0.4),
             # dense layer to connect them
-            Dense(vocab_size),
+            tf.keras.layers.Dense(vocab_size),
         ]
     )
 
     # return model
     return model
+
+
+# develop model with parameters
+model = build_model(
+    vocab_size=vocab_size,
+    embedding_dims=EMBEDDING_DIMS,
+    rnn_units=RNN_UNITS,
+    batch_size=BATCH_SIZE,
+)
+
+# print model summary
+print(model.summary())
