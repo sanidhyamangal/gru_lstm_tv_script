@@ -2,6 +2,7 @@
 import numpy as np  # for matrix multiplication
 from pickle_handler import PickleHandler
 import tensorflow as tf  # main tf class for data related ops
+import os  # for os related tasks
 
 # preprocess got data using pickle handler class
 gotData = PickleHandler("./got.pkl")
@@ -38,10 +39,15 @@ BUFFER_SIZE = 1000  # buffer size to shuffle dataset
 dataset = dataset.shuffle(BUFFER_SIZE).batch(BATCH_SIZE, drop_remainder=True)
 
 # model params handeling
+# Length of the vocabulary in chars
+vocab_size = len(gotData.vocab)
 
-RNN_UNITS = 1024  # rnn units to use for training
-EMBEDDING_DIMS = 256  # to embedd our variables into lower dims
-vocab_size = gotData.vocab_size()  # set vocab size for our model
+# The embedding dimension
+embedding_dim = 256
+
+# Number of RNN units
+rnn_units = 1024
+
 
 # function to build a model
 def build_model(vocab_size, embedding_dims, rnn_units, batch_size):
@@ -49,7 +55,7 @@ def build_model(vocab_size, embedding_dims, rnn_units, batch_size):
         [
             # embedding layer to enhance input dims
             tf.keras.layers.Embedding(
-                vocab_size, EMBEDDING_DIMS, batch_input_shape=[BATCH_SIZE, None]
+                vocab_size, embedding_dims, batch_input_shape=[BATCH_SIZE, None]
             ),
             # lstm layer
             tf.keras.layers.LSTM(
@@ -69,13 +75,33 @@ def build_model(vocab_size, embedding_dims, rnn_units, batch_size):
     return model
 
 
-# develop model with parameters
 model = build_model(
     vocab_size=vocab_size,
-    embedding_dims=EMBEDDING_DIMS,
-    rnn_units=RNN_UNITS,
+    embedding_dims=embedding_dim,
+    rnn_units=rnn_units,
     batch_size=BATCH_SIZE,
 )
 
-# print model summary
-print(model.summary())
+# loss function
+def loss(labels, logits):
+    return tf.keras.losses.sparse_categorical_crossentropy(
+        labels, logits, from_logits=True
+    )
+
+
+# compile model
+model.compile(optimizer="adam", loss=loss)
+
+# Directory where the checkpoints will be saved
+checkpoint_dir = "./training_checkpoints"
+# Name of the checkpoint files
+checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt_{epoch}")
+
+# checkpoints callbacks
+checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
+    filepath=checkpoint_prefix, save_weights_only=True
+)
+
+EPOCHS = 10
+
+history = model.fit(dataset, epochs=EPOCHS, callbacks=[checkpoint_callback])
