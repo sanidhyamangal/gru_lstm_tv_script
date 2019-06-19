@@ -13,7 +13,7 @@ text = ''
 
 # iterate into dialouge paths
 for i in dialouges_files:
-    with open(i, 'r', encoding="utf-8") as fp:
+    with open(i, 'r', encoding="latin-1") as fp:
         text += fp.read()
 
 # make a pickle file for our output file
