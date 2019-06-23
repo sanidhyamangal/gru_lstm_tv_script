@@ -2,6 +2,9 @@
 import tensorflow as tf
 import numpy as np  # for matrix multiplication
 from pickle_handler import PickleHandler  # handle pickle data
+from sys import argv
+
+filename, modelfile = argv
 
 
 # load gotdata
@@ -36,7 +39,7 @@ model = tf.keras.Sequential(
 )
 
 # load model weights
-model.load_weights("./model_lstm_40.h5")
+model.load_weights(modelfile)
 
 print("priniting model summary....")
 print(model.summary())
