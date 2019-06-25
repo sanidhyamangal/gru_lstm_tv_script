@@ -48,7 +48,6 @@ embedding_dim = 256
 # Number of RNN units
 rnn_units = 1024
 
-
 # function to build a model
 def build_model(vocab_size, embedding_dims, rnn_units, batch_size):
     model = tf.keras.Sequential(
@@ -57,12 +56,14 @@ def build_model(vocab_size, embedding_dims, rnn_units, batch_size):
             tf.keras.layers.Embedding(
                 vocab_size, embedding_dims, batch_input_shape=[BATCH_SIZE, None]
             ),
-            # lstm layer
-            tf.keras.layers.LSTM(
-                rnn_units,
-                return_sequences=True,
-                stateful=True,
-                recurrent_initializer="glorot_uniform",
+            # bidirectional rnn layer
+            tf.keras.layers.Bidirectional(
+                tf.keras.layers.SimpleRNN(
+                    rnn_units,
+                    return_sequences=True,
+                    stateful=True,
+                    recurrent_initializer="glorot_uniform",
+                )
             ),
             # drop out layer for better training efficiency
             tf.keras.layers.Dropout(rate=0.4),
