@@ -91,7 +91,7 @@ def loss(labels, logits):
 
 
 # compile model
-model.compile(optimizer="adam", loss=loss)
+model.compile(optimizer="rmsprop", loss=loss)
 
 # Directory where the checkpoints will be saved
 checkpoint_dir = "./training_checkpoints"

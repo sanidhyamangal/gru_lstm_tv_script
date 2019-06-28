@@ -81,7 +81,7 @@ def loss(labels, logits):
 
 
 # compile model
-model.compile(optimizer="adam", loss=loss)
+model.compile(optimizer="rmsprop", loss=loss)
 
 # print summary of this model
 print(model.summary())
