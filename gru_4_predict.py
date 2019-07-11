@@ -26,8 +26,34 @@ model = tf.keras.Sequential(
             gotData.vocab_size(), 256, batch_input_shape=[1, None]
         ),
         # lstm layer
-        tf.keras.layers.LSTM(
-            1024,
+        tf.keras.layers.GRU(
+            512,
+            stateful=True,
+            return_sequences=True,
+            recurrent_initializer="glorot_uniform",
+        ),
+        # dropout layer
+        tf.keras.layers.Dropout(0.4),
+        # lstm layer
+        tf.keras.layers.GRU(
+            256,
+            stateful=True,
+            return_sequences=True,
+            recurrent_initializer="glorot_uniform",
+        ),
+        # dropout layer
+        tf.keras.layers.Dropout(0.4),
+        tf.keras.layers.GRU(
+            128,
+            stateful=True,
+            return_sequences=True,
+            recurrent_initializer="glorot_uniform",
+        ),
+        # dropout layer
+        tf.keras.layers.Dropout(0.4),
+        # lstm layer
+        tf.keras.layers.GRU(
+            64,
             stateful=True,
             return_sequences=True,
             recurrent_initializer="glorot_uniform",
@@ -68,7 +94,7 @@ def generator_function(model, string_input):
         # get the predictions
         predictions = model(input_val)
 
-        # remove the batch dimsd
+        # remove the batch dims
         predictions = tf.squeeze(predictions, 0)
 
         # using categorial data for the predictions

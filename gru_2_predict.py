@@ -5,7 +5,7 @@ from pickle_handler import PickleHandler  # handle pickle data
 from sys import argv
 from tqdm import tqdm
 
-filename, modelfile = argv
+filename, modelfile, outputfile = argv
 
 
 # load gotdata
@@ -95,7 +95,6 @@ def generator_function(model, string_input):
     return string_input + "".join(text_generated)
 
 
-text = generator_function(model, u"JON: ")
-# with open('./textgenerated_gru.txt', "w") as target:
-#     target.write(text)
-print(text)
+with open(outputfile, 'w', encoding='utf-8') as fp:
+    text = generator_function(model, u"JON: ")
+    fp.write(text)

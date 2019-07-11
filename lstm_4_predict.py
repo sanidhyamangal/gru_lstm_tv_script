@@ -27,7 +27,32 @@ model = tf.keras.Sequential(
         ),
         # lstm layer
         tf.keras.layers.LSTM(
-            1024,
+            512,
+            stateful=True,
+            return_sequences=True,
+            recurrent_initializer="glorot_uniform",
+        ),
+        # dropout layer
+        tf.keras.layers.Dropout(0.4),
+        tf.keras.layers.LSTM(
+            256,
+            stateful=True,
+            return_sequences=True,
+            recurrent_initializer="glorot_uniform",
+        ),
+        # dropout layer
+        tf.keras.layers.Dropout(0.4),
+        # lstm layer
+        tf.keras.layers.LSTM(
+            128,
+            stateful=True,
+            return_sequences=True,
+            recurrent_initializer="glorot_uniform",
+        ),
+        # dropout layer
+        tf.keras.layers.Dropout(0.4),
+        tf.keras.layers.LSTM(
+            64,
             stateful=True,
             return_sequences=True,
             recurrent_initializer="glorot_uniform",

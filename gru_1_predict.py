@@ -5,7 +5,7 @@ from pickle_handler import PickleHandler  # handle pickle data
 from sys import argv
 from tqdm import tqdm
 
-filename, modelfile = argv
+filename, modelfile, outputfile = argv
 
 
 # load gotdata
@@ -34,6 +34,8 @@ model = tf.keras.Sequential(
         ),
         # dropout layer
         tf.keras.layers.Dropout(0.4),
+        # dropout layer
+        tf.keras.layers.Dropout(0.4),
         # dense layer
         tf.keras.layers.Dense(gotData.vocab_size()),
     ]
@@ -49,7 +51,7 @@ print(model.summary())
 def generator_function(model, string_input):
 
     # num of chars to generate
-    num_generate = 10000
+    num_generate = 1000
 
     input_val = [gotData.char2idx[s] for s in string_input]
     input_val = tf.expand_dims(input_val, 0)
@@ -86,8 +88,6 @@ def generator_function(model, string_input):
     return string_input + "".join(text_generated)
 
 
-# with open('./textgenerated_gru.txt', "w") as target:
-#     text = generator_function(model, u"Sam reaches Winterfell, where he and Bran discover a shocking secret about Jon Snow")
-#     target.write(text)
-text = generator_function(model, u"JON: ")
-print(text)
+with open(outputfile, 'w', encoding='utf-8') as fp:
+    text = generator_function(model, u"JON: ")
+    fp.write(text)

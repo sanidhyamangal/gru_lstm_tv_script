@@ -4,7 +4,7 @@ import numpy as np  # for matrix multiplication
 from pickle_handler import PickleHandler  # handle pickle data
 from sys import argv
 
-filename, modelfile = argv
+filename, modelfile, output_file = argv
 
 
 # load gotdata
