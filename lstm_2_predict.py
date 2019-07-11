@@ -27,7 +27,15 @@ model = tf.keras.Sequential(
         ),
         # lstm layer
         tf.keras.layers.LSTM(
-            1024,
+            512,
+            stateful=True,
+            return_sequences=True,
+            recurrent_initializer="glorot_uniform",
+        ),
+        # dropout layer
+        tf.keras.layers.Dropout(0.4),
+        tf.keras.layers.LSTM(
+            256,
             stateful=True,
             return_sequences=True,
             recurrent_initializer="glorot_uniform",
@@ -44,7 +52,7 @@ model.load_weights(modelfile)
 
 print("priniting model summary....")
 print(model.summary())
-exit()
+
 # generator function
 def generator_function(model, string_input):
 
@@ -68,7 +76,7 @@ def generator_function(model, string_input):
         # get the predictions
         predictions = model(input_val)
 
-        # remove the batch dims
+        # remove the batch dimsd
         predictions = tf.squeeze(predictions, 0)
 
         # using categorial data for the predictions
