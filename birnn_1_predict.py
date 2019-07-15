@@ -3,8 +3,8 @@ import tensorflow as tf
 import numpy as np  # for matrix multiplication
 from pickle_handler import PickleHandler  # handle pickle data
 from sys import argv
-
-filename, modelfile, output_file = argv
+from tqdm import tqdm
+filename, modelfile, outputfile = argv
 
 
 # load gotdata
@@ -66,7 +66,7 @@ def generator_function(model, string_input):
     model.reset_states()
 
     # iterate into negerate
-    for i in range(num_generate):
+    for i in tqdm(range(num_generate), ncols=100):
         # get the predictions
         predictions = model(input_val)
 
@@ -83,9 +83,9 @@ def generator_function(model, string_input):
         # append into text generated
         text_generated.append(gotData.idx2char[prediction_id])
 
-        if i % 100 == 0:
-            print("Generated {}% of string".format(i / 10))
     return string_input + "".join(text_generated)
 
 
-print(generator_function(model, "Jon: "))
+with open(outputfile, 'w', encoding='utf-8') as fp:
+    text = generator_function(model, u"JON: ")
+    fp.write(text)
